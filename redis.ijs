@@ -14,24 +14,38 @@ monad define ''
   smoutput 'all done'
 )
 
+NB. See also: pacman.ijs
 monad define ''
-try.
-  socket =.  >{.sdcheck sdsocket''                 NB.  Open a socket
+  NB. socket =.  >{.sdcheck sdsocket''                 NB.  Open a socket
+  socket =.  >0{sdcheck sdsocket''                 NB.  Open a socket
   host   =. sdcheck sdgethostbyname 'localhost'    NB.  Resolve host
   sdcheck sdconnect socket ; host ,< 6379          NB.  Create connection to port 6379 (redis)
   NB. redis=:(>sdcheck 'keys *' sdsend socket , 0)               NB.  Send msg (list redis keys)
-  NB. redis=:(>sdcheck 'GET d4ce6bedc5a6c11ceb6e8d8eb07464b1a502c788' sdsend socket , 0) NB.  Send msg (list redis keys)
-
+  NB. redis=:(>sdcheck 'GET d4ce6bedc5a6c11ceb6e8d8eb07464b1a502c788' sdsend socket , 0) NB.  Send msg
   NB. smoutput redis
 
-  d=. y
+  'rc sent'=. ('GET ', 'd4ce6bedc5a6c11ceb6e8d8eb07464b1a502c788') sdsend socket ; 0
+
+  smoutput 'Sent stuff'
+  smoutput rc
+  smoutput sent
+
+  while. ((0=rc)*.(*#m)) [[ 'rc m'=. sdrecv_jsocket_ socket,4096 do.
+    smoutput 'In loop'
+    pp=. pp,m
+    smoutput pp
+  end.
 
   smoutput 'Socket time'
+  d=. y
 
-  z=. sdselect socket;'';'';500 NB. ms
-  assert socket e.>1{z NB. Timeout
+try.
+  NB. z=. sdselect socket;'';'';500 NB. ms
+  NB. assert socket e.>1{z NB. Timeout
   smoutput 'No timeout'
-  'c r'=. sdrecv socket, 10000, 0
+  'c r'=. sdrecv socket, 10, 0
+  smoutput 'recv'
+  smoutput 'c r'
   assert 0=c
   assert 0~:#r
   d=. d,r
