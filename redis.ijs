@@ -21,7 +21,8 @@ monad define ''
   host   =. sdcheck sdgethostbyname 'localhost'    NB.  Resolve host
 
   NB. server =. 0 pick sdcheck sdaccept socket 0
-  sdcheck sdconnect socket ; host ,< 6379          NB.  Create connection to port 6379 (redis)
+  NB. sdcheck sdconnect socket ; host ,< 6379          NB.  Create connection to port 6379 (redis)
+  sdcheck sdconnect socket ; host ,< 12345          NB.  Create connection to port 6379 (redis)
   server =. >0{sdaccept sdlisten socket
   NB. server =. 0 pick sdcheck sdaccept sdcheck sdsocket''
   NB. redis=:(>sdcheck 'keys *' sdsend socket , 0)               NB.  Send msg (list redis keys)
@@ -37,11 +38,13 @@ monad define ''
   NB. Looks like an opcode
   srecv=: 3 : 0
 
-   NB. Re-enable to check for timeout
-   NB. z=. sdselect socket;'';'';1000 NB. ms
-   NB. assert server e.>1{z NB. Timeout
+  NB. Re-enable to check for timeout
+  z=. sdselect socket;'';'';10000 NB. ms
+  assert socket e.>1{z NB. Timeout
 
-  'c r'=. sdrecv server,4026,0
+  NB. It'll pause/block here, until we receive something.
+  'c r'=. sdrecv socket,4026,0
+
   smoutput 'C and R'
   smoutput c
   smoutput r
@@ -49,7 +52,7 @@ monad define ''
   NB. We know we get 9 bytes if we send out 'fido'
   assert 9=c
   assert 9~:#r
-  smoutput {.r
+  smoutput 9{.r
   exit 0
 
 try.
