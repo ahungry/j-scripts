@@ -5,7 +5,7 @@ PORT=: > 2 } ARGV NB. Extract that arg and unbox it
 monad define ''
   socket=.  >0{sdcheck sdsocket''               NB.  Open a socket
   NB. host=. sdcheck sdgethostbyname 'localhost'    NB.  Resolve host
-  host=. sdcheck sdgethostbyname 'ahungry.com'    NB.  Resolve host
+  host=. sdcheck sdgethostbyname 'example.com'    NB.  Resolve host
 
   if. PORT-:'12345' do.
     sdconnect socket ; host ,< 12345
@@ -17,8 +17,8 @@ monad define ''
   NB. sdcheck sdconnect socket ; host ,< 12345
   NB. 'rc sent'=. ('GET ', 'dog') sdsend socket ; 0
   f=.'/'
-  'rc sent'=. ('GET ',f,' HTTP/1.0',LF,'Hostname: ahungry.com',LF2) sdsend socket ; 0
-  smoutput ('GET ',f,' HTTP/1.0',LF,'Hostname: ahungry.com',LF2)
+  'rc sent'=. ('GET ',f,' HTTP/1.1',LF,'Host: example.com',LF2) sdsend socket ; 0
+  smoutput ('GET ',f,' HTTP/1.1',LF,'Host: example.com',LF2)
 
   smoutput 'Sent stuff'
   smoutput rc
@@ -29,7 +29,12 @@ monad define ''
   while. ((0=rc)*.(*#m)) [[ 'rc m'=. sdrecv socket,4096 do.
     pp=. pp,m
     smoutput pp
+    if. (0=rc) do. break. end.
   end.
+
+  smoutput 'fin'
+
+  exit 0
 
   NB. Re-enable to check for timeout
   z=. sdselect socket;'';'';10000 NB. ms
