@@ -1,3 +1,5 @@
+NB. Run with: ~/jbld/j64/bin/jconsole ~/src/j-scripts/httpFetch.ijs 6379
+
 coinsert'jsocket' [ require 'socket'             NB.  Sockets library
 
 PORT=: > 2 } ARGV NB. Extract that arg and unbox it
