@@ -24,3 +24,12 @@ P=: 2 3   NB. Prices
 Q=: 1 100 NB. quantities
 total=: sum @: * NB. Dyadic composition - multiply quantity by price, then sum them.
 P total Q NB. 302 (sum (2 3 * 1 100)) -> (sum 2 300)
+
+NB. Get the min of a set
+min=: {./:~;
+
+NB. Get the max of a set
+max=: {.\:~;
+
+NB. Take first 20 vals in a range to 100
+taketwenty=: 20{. i.100
