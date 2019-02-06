@@ -13,8 +13,8 @@ sumsq=: sum @: square
 
 NB. Fahrenheit to Celsius (subtract 32 and multiply by 5/9ths)
 s=: - & 32
-m=: * & (5%9)
-convert=: m@:s
+m=: * & (5 % 9)
+convert=: m @: s
 convert 212
 
 conv=:(* & (5 % 9)) @: (- & 32) NB. 212 -> 100
@@ -32,4 +32,4 @@ NB. Get the max of a set
 max=: {. \: ~ ;
 
 NB. Take first 20 vals in a range to 100
-taketwenty=: 20{. i.100
+taketwenty=: 20 {. i.100
