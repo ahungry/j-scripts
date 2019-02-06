@@ -4,8 +4,8 @@ NB. http://rosettacode.org/wiki/Loops/While#J
 NB. http://www.jsoftware.com/help/jforc/error_messages.htm
 
 coinsert'jsocket' [ require 'socket'             NB.  Sockets library
-socket =.  >{.sdcheck sdsocket''                 NB.  Open a socket
-host   =. sdcheck sdgethostbyname 'localhost'    NB.  Resolve host
+socket =.  > {. sdcheck sdsocket''                 NB.  Open a socket
+host =. sdcheck sdgethostbyname 'localhost'    NB.  Resolve host
 sdcheck sdconnect socket ; host ,< 6379          NB.  Create connection to port 6379 (redis)
 NB. smoutput sdcheck 'keys *' sdsend socket , 0               NB.  Send msg (list redis keys)
 
@@ -20,7 +20,10 @@ monad define xxx
   i.0 0
 )
 
-NB. while. #t do. t=.(>sdcheck sdconnect socket ; host ,< 6379)}.t end.
+monad define xy
+  while. #t do. t=.(>sdcheck sdconnect socket ; host ,< 6379)}.t end.
+i.0 0
+)
 
 NB. Output 1024 and halve it each time.
 smoutput ,. <.@-:^:*^:a: 1024
