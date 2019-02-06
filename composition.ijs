@@ -17,7 +17,7 @@ m=: * & (5%9)
 convert=: m@:s
 convert 212
 
-conv=:(* & (5%9)) @: (- & 32) NB. 212 -> 100
+conv=:(* & (5 % 9)) @: (- & 32) NB. 212 -> 100
 
 NB. Calculating an order total
 P=: 2 3   NB. Prices
@@ -26,10 +26,10 @@ total=: sum @: * NB. Dyadic composition - multiply quantity by price, then sum t
 P total Q NB. 302 (sum (2 3 * 1 100)) -> (sum 2 300)
 
 NB. Get the min of a set
-min=: {./:~;
+min=: {. /: ~ ;
 
 NB. Get the max of a set
-max=: {.\:~;
+max=: {. \: ~ ;
 
 NB. Take first 20 vals in a range to 100
 taketwenty=: 20{. i.100
