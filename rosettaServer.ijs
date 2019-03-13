@@ -17,14 +17,19 @@ sdlisten sock, 5
 NB. DO block basically
 monad define ''
   while. 1 = 1 do.
-    w=. > 1 } sdselect '' NB. Returns result;read;write;error
+    NB. w=. > 1 } sdselect '' NB. Returns result;read;write;error
+    w=. > 1 } sdselect sock;sock;sock;0 NB. Returns result;read;write;error
 
-    if. #w > 0 do.
-    smoutput w
+    if. #w do.
+      smoutput w
       sa=. > 1 } ; sdaccept w
-      input=. > 1 } sdrecv sa, 1024, 0
-      input sdsend sa, 0
-      NB. sdclose sa NB. Byebye
+
+      while. #sa do. NB. Need to detect when client disconnects
+        input=. > 1 } sdrecv sa, 1024, 0
+        input sdsend sa, 0
+        NB. sdclose sa NB. Byebye
+        smoutput 'I am in the loop still...'
+      end.
     end.
   end.
   i.0 0
