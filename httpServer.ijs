@@ -25,32 +25,37 @@ monad define ''
     NB. smoutput t
     NB. t=.(>sdcheck sdconnect socket ; host ,< 6379)}.t
     NB. pull in all the ready to read sockets
-    rt=. sdselect sock, sock, sock, 10e3
-    smoutput rt
+    NB. rt=. sdselect sock, sock, sock, 10e3
+    rt=. sdselect '' NB. Returns result;read;write;error
     w=. > 1 } rt
-    r=. > 0 } rt
+    r=. > 1 } rt
 
-    if. r > 0 do.
-      sr=. >1};sdaccept r
-      read=.>1}sdrecv accepts, 1024, 0
-      smoutput read
-    end.
+    NB. # is tally
 
-    if. w > 0 do.
-        smoutput 'Selected socket ready to work on'
-        smoutput w
-        NB. Result is result code and new socket
-        NB. sa=. > 1 } sdaccept t
-        sa=. > 1 } ; sdaccept w
-        NB. smoutput raw
-        NB. smoutput 0 { sa
-        NB. smoutput > 1 { sa
-        NB. smoutput 2 { sa
-        NB. input=. > 1 } sdrecv accepts, 1024, 0
-        NB. smoutput input
-        sent=. 'hi' sdsend sa , 0
-        smoutput 'Sent some text'
-        smoutput sent
+    NB. if. #r > 0 do.
+      NB. smoutput 'Someone wants to send us a message'
+      NB. sr=. >1};sdaccept r
+      NB. read=.>1}sdrecv accepts, 1024, 0
+      NB. smoutput 'We think we read something'
+      NB. smoutput read
+    NB. end.
+
+    if. #w > 0 do.
+      smoutput 'Selected socket ready to work on'
+      smoutput w
+      NB. Result is result code and new socket
+      NB. sa=. > 1 } sdaccept t
+      sa=. > 1 } ; sdaccept w
+      NB. smoutput raw
+      NB. smoutput 0 { sa
+      NB. smoutput > 1 { sa
+      NB. smoutput 2 { sa
+      input=. > 1 } sdrecv sa, 1024, 0
+      smoutput input
+      NB. sent=. 'hi' sdsend sa , 0
+      sent=. input sdsend sa, 0
+      smoutput 'Sent some text'
+      smoutput sent
     end.
   end.
   i.0 0
