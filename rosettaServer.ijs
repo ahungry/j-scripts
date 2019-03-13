@@ -25,6 +25,9 @@ monad define ''
       sa=. > 1 } ; sdaccept w
       input=.'Welcome to echo server, type some text: '
 
+      NB. This is blocking, aka non-concurrent.  We need some way to thread
+      NB. the inbound request if we wanted to allow more than one client to
+      NB. connect a time, otherwise one person connects and that's it, they block all others.
       while. #input do. NB. Need to detect when client disconnects
         input sdsend sa, 0
         'ierr input'=. sdrecv sa, 1024, 0 NB. Destructuring box assignment
