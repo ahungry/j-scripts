@@ -56,6 +56,7 @@ monad define ''
       sent=. input sdsend sa, 0
       smoutput 'Sent some text'
       smoutput sent
+      sdclose sa
     end.
   end.
   i.0 0
