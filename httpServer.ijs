@@ -21,15 +21,37 @@ monad define 1024
 
 monad define ''
   while. 1 = 1 do.
-    smoutput 'yea'
-    smoutput t
+    NB. smoutput 'yea'
+    NB. smoutput t
     NB. t=.(>sdcheck sdconnect socket ; host ,< 6379)}.t
     NB. pull in all the ready to read sockets
-    t=. > 0 } sdselect ''
-    smoutput t
-    accepts=. > 0 } sdaccept t
-    smoutput accepts
-    'hi' sdsend accepts , 0
+    rt=. sdselect sock, sock, sock, 10e3
+    smoutput rt
+    w=. > 1 } rt
+    r=. > 0 } rt
+
+    if. r > 0 do.
+      sr=. >1};sdaccept r
+      read=.>1}sdrecv accepts, 1024, 0
+      smoutput read
+    end.
+
+    if. w > 0 do.
+        smoutput 'Selected socket ready to work on'
+        smoutput w
+        NB. Result is result code and new socket
+        NB. sa=. > 1 } sdaccept t
+        sa=. > 1 } ; sdaccept w
+        NB. smoutput raw
+        NB. smoutput 0 { sa
+        NB. smoutput > 1 { sa
+        NB. smoutput 2 { sa
+        NB. input=. > 1 } sdrecv accepts, 1024, 0
+        NB. smoutput input
+        sent=. 'hi' sdsend sa , 0
+        smoutput 'Sent some text'
+        smoutput sent
+    end.
   end.
   i.0 0
 )
